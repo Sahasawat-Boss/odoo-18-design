@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hrdi_flow_map.NodeCard">
+        <div class="o_hrdi_node"
+             t-att-data-node="node.key"
+             t-att-class="{
+                ['o_hrdi_tag_' + node.tag]: true,
+                'o_hrdi_missing': !node.installed,
+                'o_hrdi_selected': state.selected === node.key,
+                'o_hrdi_dimmed': isDimmed(node.key),
+             }"
+             t-on-click="() => this.onSelect(node)"
+             t-on-dblclick="() => this.openNode(node)">
+            <div class="o_hrdi_node_head">
+                <span class="o_hrdi_node_title" t-esc="node.label"/>
+                <span t-if="node.gl" class="o_hrdi_badge o_hrdi_badge_gl" title="เอกสารนี้ลงบัญชี GL">GL</span>
+            </div>
+            <div class="o_hrdi_node_apps" t-esc="node.apps"/>
+            <div t-if="node.custom_ext" class="o_hrdi_badge o_hrdi_badge_custom">+ custom: <t t-esc="node.custom_ext"/></div>
+            <div t-if="!node.installed" class="o_hrdi_node_missing">
+                <t t-if="node.tag === 'custom'">ต้องพัฒนาเพิ่ม</t>
+                <t t-else="">ยังไม่ได้ติดตั้ง</t>
+            </div>
+            <ul t-if="node.metrics.length" class="o_hrdi_metrics">
+                <li t-foreach="node.metrics" t-as="m" t-key="m_index"
+                    t-on-click="(ev) => this.openMetric(m, ev)" title="คลิกเพื่อเปิดรายการ">
+                    <span class="o_hrdi_metric_label" t-esc="m.label"/>
+                    <span class="o_hrdi_metric_value">
+                        <t t-if="m.denied">ไม่มีสิทธิ์</t>
+                        <t t-elif="m.count === null">–</t>
+                        <t t-else="">
+                            <b t-esc="m.count"/>
+                            <t t-if="m.amount !== null"> · <t t-esc="formatAmount(m.amount)"/></t>
+                        </t>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </t>
+
+    <t t-name="hrdi_flow_map.FlowMap">
+        <div class="o_hrdi_flow h-100 overflow-auto">
+            <div class="o_hrdi_header">
+                <div>
+                    <h2 class="mb-0">ภาพรวม Flow ระบบ HRDI</h2>
+                    <div class="text-muted">งบประมาณคุมทุกการใช้เงิน แล้วทุกอย่างลง GL · คลิกกล่องเพื่อดูการเชื่อมต่อ · ดับเบิลคลิกเพื่อเปิดเอกสาร</div>
+                </div>
+                <div class="o_hrdi_legend">
+                    <span class="o_hrdi_legend_item o_hrdi_tag_std">Odoo มาตรฐาน</span>
+                    <span class="o_hrdi_legend_item o_hrdi_tag_oca">OCA / Ecosoft</span>
+                    <span class="o_hrdi_legend_item o_hrdi_tag_custom">ต้อง custom</span>
+                    <span class="o_hrdi_legend_line o_hrdi_kind_flow">ขั้นตอน</span>
+                    <span class="o_hrdi_legend_line o_hrdi_kind_budget">กันงบ / ใช้งบ</span>
+                    <span class="o_hrdi_legend_line o_hrdi_kind_cross">ข้ามสาย</span>
+                    <button class="btn btn-secondary btn-sm" t-on-click="refresh" title="นับจำนวนใหม่">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </div>
+            </div>
+
+            <div t-if="state.data" class="o_hrdi_body">
+                <div class="o_hrdi_canvas" t-ref="canvas">
+                    <svg class="o_hrdi_edges">
+                        <defs>
+                            <marker t-foreach="['flow', 'budget', 'cross']" t-as="k" t-key="k"
+                                    t-att-id="'hrdi-arrow-' + k" viewBox="0 0 10 10" refX="9" refY="5"
+                                    markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" t-att-class="'o_hrdi_arrow_' + k"/>
+                            </marker>
+                        </defs>
+                        <g t-foreach="state.edges" t-as="e" t-key="e.id"
+                           t-att-class="'o_hrdi_edge o_hrdi_kind_' + e.kind + (e.active ? '' : ' o_hrdi_edge_dim')">
+                            <path t-att-d="e.d" t-att-marker-end="'url(#hrdi-arrow-' + e.kind + ')'"/>
+                            <text t-att-x="e.lx" t-att-y="e.ly" text-anchor="middle" dominant-baseline="middle"
+                                  t-esc="e.label"/>
+                        </g>
+                    </svg>
+
+                    <div class="o_hrdi_lanes">
+                        <div t-foreach="lanes" t-as="lane" t-key="lane.key"
+                             t-att-class="'o_hrdi_lane o_hrdi_lane_' + lane.key">
+                            <div class="o_hrdi_lane_head">
+                                <div class="o_hrdi_lane_title" t-esc="lane.label"/>
+                                <div class="o_hrdi_lane_sub" t-esc="lane.sub"/>
+                            </div>
+                            <div class="o_hrdi_lane_nodes">
+                                <t t-foreach="lane.nodes" t-as="node" t-key="node.key">
+                                    <t t-call="hrdi_flow_map.NodeCard"/>
+                                </t>
+                            </div>
+                            <div class="o_hrdi_to_gl">▼ ลงบัญชี</div>
+                        </div>
+                    </div>
+
+                    <div class="o_hrdi_gl" t-if="glNode">
+                        <t t-set="node" t-value="glNode"/>
+                        <t t-call="hrdi_flow_map.NodeCard"/>
+                    </div>
+                </div>
+
+                <aside class="o_hrdi_panel">
+                    <t t-if="selectedNode">
+                        <t t-set="n" t-value="selectedNode"/>
+                        <div t-att-class="'o_hrdi_panel_tag o_hrdi_tag_' + n.tag">
+                            <t t-if="n.tag === 'std'">Odoo มาตรฐาน</t>
+                            <t t-elif="n.tag === 'oca'">OCA / Ecosoft</t>
+                            <t t-else="">ต้อง custom</t>
+                        </div>
+                        <h3 t-esc="n.label"/>
+                        <p t-esc="n.desc"/>
+
+                        <h5>โมดูล</h5>
+                        <div class="o_hrdi_chips">
+                            <code t-foreach="n.modules" t-as="mod" t-key="mod" t-esc="mod"/>
+                        </div>
+
+                        <h5 t-if="n.tables.length">ตารางใน Postgres (ดูใน pgAdmin)</h5>
+                        <div class="o_hrdi_chips">
+                            <code t-foreach="n.tables" t-as="tbl" t-key="tbl" t-esc="tbl"/>
+                        </div>
+
+                        <h5 t-if="selectedEdges.length">เชื่อมกับ</h5>
+                        <ul class="o_hrdi_links">
+                            <li t-foreach="selectedEdges" t-as="e" t-key="e_index">
+                                <span t-att-class="'o_hrdi_dot o_hrdi_kind_' + e.kind"/>
+                                <t t-esc="e.dir"/> <b t-esc="e.other"/> — <t t-esc="e.label"/>
+                                <span class="text-muted"> (<t t-esc="kindLabel[e.kind]"/>)</span>
+                            </li>
+                        </ul>
+
+                        <button class="btn btn-primary mt-2" t-if="n.installed and (n.action_id or n.fallback)"
+                                t-on-click="() => this.openNode(n)">
+                            เปิดเอกสาร <i class="fa fa-arrow-right"/>
+                        </button>
+                    </t>
+                    <t t-else="">
+                        <h4>วิธีอ่านแผนผัง</h4>
+                        <ul class="o_hrdi_help">
+                            <li>4 สายงานไหลจากบนลงล่าง แล้ว <b>ทุกสายลงบัญชี GL</b> ด้านล่าง</li>
+                            <li><b>เส้นสีม่วง</b> = เอกสารที่กันงบ / ใช้งบ ทุกใบต้องผ่าน "คุมงบ"</li>
+                            <li>ตัวเลขในกล่อง = จำนวนเอกสารจริงใน DB (คลิกตัวเลขเพื่อเปิดรายการ)</li>
+                            <li>คลิกกล่องเพื่อดูโมดูล ตาราง DB และการเชื่อมต่อ</li>
+                            <li>กล่องเส้นประสีส้ม = ยังต้องพัฒนาเพิ่ม</li>
+                        </ul>
+                    </t>
+                </aside>
+            </div>
+        </div>
+    </t>
+
+</templates>

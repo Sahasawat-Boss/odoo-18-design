@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- client action: tag ต้องตรงกับ registry.category("actions").add("hrdi_flow_map", ...) ใน JS -->
+    <record id="action_hrdi_flow_map" model="ir.actions.client">
+        <field name="name">ภาพรวม Flow ระบบ HRDI</field>
+        <field name="tag">hrdi_flow_map</field>
+    </record>
+
+    <menuitem id="menu_hrdi_flow_map_root"
+              name="HRDI Flow"
+              action="action_hrdi_flow_map"
+              web_icon="hrdi_flow_map,static/description/icon.png"
+              sequence="1"/>
+</odoo>
