@@ -1,0 +1,18 @@
+# Odoo + third-party addons: fetched by scripts/get-addons.ps1
+odoo/
+external/
+
+# local runtime
+venv/
+data/
+logs/
+*.log
+__pycache__/
+*.py[cod]
+req-win.txt
+
+# local config with passwords -> odoo.conf.example
+odoo.conf
+
+.vscode/
+.idea/

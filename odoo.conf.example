@@ -1,0 +1,21 @@
+[options]
+; ---- Database (local PostgreSQL, port 5433) ----
+db_host = localhost
+db_port = 5433
+db_user = odoo
+db_password = CHANGE_ME
+; only HRDI databases on this instance
+dbfilter = ^hrdi.*$
+; Windows PG can't mix C collate with Thai ctype -> UI-created DBs copy template1
+db_template = template1
+
+; ---- Paths (order matters: custom_addons last) ----
+addons_path = D:\Code\0Odoo\hrdi-erp\odoo\addons,D:\Code\0Odoo\hrdi-erp\odoo\odoo\addons,D:\Code\0Odoo\hrdi-erp\external\budgeting,D:\Code\0Odoo\hrdi-erp\external\l10n-thailand,D:\Code\0Odoo\hrdi-erp\external\hr-expense,D:\Code\0Odoo\hrdi-erp\external\account-financial-tools,D:\Code\0Odoo\hrdi-erp\external\account-financial-reporting,D:\Code\0Odoo\hrdi-erp\external\purchase-workflow,D:\Code\0Odoo\hrdi-erp\external\server-ux,D:\Code\0Odoo\hrdi-erp\external\web,D:\Code\0Odoo\hrdi-erp\external\reporting-engine,D:\Code\0Odoo\hrdi-erp\external\server-tools,D:\Code\0Odoo\hrdi-erp\external\partner-contact,D:\Code\0Odoo\hrdi-erp\custom_addons
+data_dir = D:\Code\0Odoo\hrdi-erp\data
+
+; ---- Server: 8070 so it can run beside the Odoo 20 sandbox on 8069 ----
+http_port = 8070
+admin_passwd = CHANGE_ME
+; only reload (xml,qweb make every page ~15x slower on Windows)
+dev_mode = reload
+log_level = info
