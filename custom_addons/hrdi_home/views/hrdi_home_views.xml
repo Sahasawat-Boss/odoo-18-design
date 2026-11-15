@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hrdi_home" model="ir.actions.client">
+        <field name="name">HRDI</field>
+        <field name="tag">hrdi_home</field>
+    </record>
+
+    <!-- sequence 0 = ไอคอนแรกในหน้ารวมแอป (ก่อน HRDI Flow ที่เป็น 1) -->
+    <menuitem id="menu_hrdi_home_root"
+              name="HRDI"
+              action="action_hrdi_home"
+              web_icon="hrdi_home,static/description/icon.png"
+              sequence="0"/>
+</odoo>

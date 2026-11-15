@@ -1,0 +1,170 @@
+$hrdi-primary: #3b2a6b;
+$hrdi-section-colors: (
+    purple: #9333ea,
+    green: #16a34a,
+    blue: #2563eb,
+    orange: #ea580c,
+    teal: #0d9488,
+);
+
+.o_hrdi_home {
+    background: #f6f7fb;
+
+    .o_hrdi_hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 28px 32px;
+        color: #fff;
+        background: linear-gradient(120deg, $hrdi-primary 0%, #5b3fa6 55%, #0f766e 100%);
+        h1 {
+            color: #fff;
+            margin: 4px 0 2px;
+            font-size: 26px;
+        }
+    }
+    .o_hrdi_hero_kicker {
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        opacity: 0.8;
+    }
+    .o_hrdi_hero_date { opacity: 0.85; }
+    .o_hrdi_flow_btn {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        padding: 8px 16px;
+        &:hover { background: rgba(255, 255, 255, 0.28); color: #fff; }
+    }
+
+    .o_hrdi_home_body {
+        max-width: 1400px;
+        padding: 8px 32px 40px;
+    }
+    .o_hrdi_block {
+        margin-top: 24px;
+        h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+    }
+
+    // ---------- my work ----------
+    .o_hrdi_todos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 12px;
+    }
+    .o_hrdi_todo {
+        position: relative;
+        background: #fff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        border-left: 5px solid var(--hrdi-tone);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+        cursor: pointer;
+        transition: transform 0.12s, box-shadow 0.12s;
+        &:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1); }
+        > .fa {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+            font-size: 20px;
+            color: var(--hrdi-tone);
+            opacity: 0.6;
+        }
+    }
+    .o_hrdi_todo_count {
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--hrdi-tone);
+    }
+    .o_hrdi_todo_label { font-size: 12px; color: #475569; }
+    .o_hrdi_todo_zero {
+        .o_hrdi_todo_count { color: #cbd5e1; }
+        border-left-color: #e2e8f0;
+    }
+    .o_hrdi_tone_danger { --hrdi-tone: #dc2626; }
+    .o_hrdi_tone_warning { --hrdi-tone: #d97706; }
+    .o_hrdi_tone_info { --hrdi-tone: #2563eb; }
+    .o_hrdi_tone_secondary { --hrdi-tone: #64748b; }
+
+    // ---------- quick start ----------
+    .o_hrdi_quicks {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 10px;
+    }
+    .o_hrdi_quick {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 12px;
+        transition: border-color 0.12s, box-shadow 0.12s;
+        &:hover {
+            border-color: #5b3fa6;
+            box-shadow: 0 4px 12px rgba(91, 63, 166, 0.15);
+            .o_hrdi_quick_plus { opacity: 1; }
+        }
+    }
+    .o_hrdi_quick_icon {
+        flex: none;
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: #ede9fe;
+        color: #5b3fa6;
+        font-size: 17px;
+    }
+    .o_hrdi_quick_text {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        b { color: #1e293b; font-size: 13px; }
+        small { color: #94a3b8; font-size: 11px; }
+    }
+    .o_hrdi_quick_plus { color: #5b3fa6; opacity: 0.3; }
+
+    // ---------- systems ----------
+    .o_hrdi_sections {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 12px;
+    }
+    .o_hrdi_section {
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        border-top: 4px solid var(--hrdi-c);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    @each $name, $color in $hrdi-section-colors {
+        .o_hrdi_c_#{$name} { --hrdi-c: #{$color}; }
+    }
+    .o_hrdi_section_head {
+        padding: 10px 14px 6px;
+        font-weight: 700;
+        color: var(--hrdi-c);
+    }
+    .o_hrdi_section_link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 14px;
+        color: #334155;
+        font-size: 13px;
+        border-top: 1px solid #f1f5f9;
+        &:hover { background: #f8fafc; color: var(--hrdi-c); }
+    }
+}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hrdi_home.Home">
+        <div class="o_hrdi_home h-100 overflow-auto">
+            <t t-if="state.data">
+                <t t-set="d" t-value="state.data"/>
+
+                <!-- hero -->
+                <section class="o_hrdi_hero">
+                    <div>
+                        <div class="o_hrdi_hero_kicker">ระบบ ERP · <t t-esc="d.user.company"/></div>
+                        <h1><t t-esc="greeting"/>, <t t-esc="d.user.name"/></h1>
+                        <div class="o_hrdi_hero_date" t-esc="today"/>
+                    </div>
+                    <button t-if="d.flow_action_id" class="btn o_hrdi_flow_btn"
+                            t-on-click="() => this.openAction(d.flow_action_id)">
+                        <i class="fa fa-sitemap me-2"/>ดูผังระบบ (Flow)
+                    </button>
+                </section>
+
+                <div class="o_hrdi_home_body">
+                    <!-- my work -->
+                    <section class="o_hrdi_block">
+                        <h3>งานของฉัน</h3>
+                        <div class="o_hrdi_todos">
+                            <div t-foreach="d.todos" t-as="todo" t-key="todo.key"
+                                 t-att-class="'o_hrdi_todo o_hrdi_tone_' + todo.tone + (todo.count ? '' : ' o_hrdi_todo_zero')"
+                                 t-on-click="() => this.openTodo(todo)">
+                                <i t-att-class="'fa ' + todo.icon"/>
+                                <div class="o_hrdi_todo_count" t-esc="todo.count"/>
+                                <div class="o_hrdi_todo_label" t-esc="todo.label"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- quick start -->
+                    <section class="o_hrdi_block">
+                        <h3>เริ่มงานด่วน</h3>
+                        <div class="o_hrdi_quicks">
+                            <button t-foreach="d.quick_actions" t-as="q" t-key="q_index"
+                                    class="o_hrdi_quick" t-on-click="() => this.openQuick(q)">
+                                <span class="o_hrdi_quick_icon"><i t-att-class="'fa ' + q.icon"/></span>
+                                <span class="o_hrdi_quick_text">
+                                    <b t-esc="q.label"/>
+                                    <small t-esc="q.sub"/>
+                                </span>
+                                <i class="fa fa-plus o_hrdi_quick_plus"/>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- systems -->
+                    <section class="o_hrdi_block">
+                        <h3>ระบบงาน</h3>
+                        <div class="o_hrdi_sections">
+                            <div t-foreach="d.sections" t-as="s" t-key="s.key"
+                                 t-att-class="'o_hrdi_section o_hrdi_c_' + s.color">
+                                <div class="o_hrdi_section_head" t-esc="s.label"/>
+                                <a t-foreach="s.items" t-as="item" t-key="item_index" href="#"
+                                   class="o_hrdi_section_link"
+                                   t-on-click.prevent="() => this.openAction(item.action_id)">
+                                    <t t-esc="item.label"/><i class="fa fa-angle-right"/>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>
